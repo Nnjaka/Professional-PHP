@@ -9,12 +9,14 @@ require_once '../vendor/autoload.php';
 $loader = new FilesystemLoader('../templates');
 $twig = new Environment($loader);
 
+$imageID = $_GET['product_id'];
+
 $link = mysqli_connect('localhost:3307', 'root', '', 'GB');
 if ($link) {
-    $query = "SELECT id, title, path, price FROM products;";
+    $query = "SELECT id, title, path, price FROM products WHERE id =" . $imageID . ";";
     $result = mysqli_query($link, $query);
     while ($row = mysqli_fetch_assoc($result)) {
-        $products[] = $row;
+        $product[] = $row;
     };
     mysqli_close($link);
 } else {
@@ -22,9 +24,9 @@ if ($link) {
 }
 
 try {
-    $template = $twig->load('index.html.twig');
+    $template = $twig->load('product.html.twig');
     echo $template->render([
-        'products' => $products
+        'product' => $product
     ]);
 } catch (Exception $exeption) {
     echo $exeption->getMessage();
